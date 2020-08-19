@@ -16,7 +16,9 @@
     <div fxFlex>
       <mat-grid-list cols="2" rowHeight="200px">
         <mat-grid-tile *ngFor="let dish of dishes" [routerLink]="['/dishdetail', dish.id]">
-          <img height="200px" src={{dish.image}} alt={{dish.name}}>
+          <div fxflex>
+            <img height="200px" src={{dish.image}} alt={{dish.name}}>
+          </div>
           <mat-grid-tile-footer>
             <h1>{{dish.name | uppercase}}</h1>
           </mat-grid-tile-footer>
