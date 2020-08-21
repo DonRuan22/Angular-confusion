@@ -6,14 +6,7 @@
     fxLayoutGap="10px" 
     fxLayoutGap.xs="0">
 
-  <div fxFlex="100">
-    <div>
-      <h3 *ngIf="dish">{{dish.name | uppercase}}</h3>
-      <hr>
-    </div>
-  </div>
-
-  <div fxFlex="40" *ngIf="dish">
+  <div fxFlex="200" *ngIf="dish">
     <mat-card *ngIf="dish">
       <mat-card-header>
         <mat-card-title>
@@ -40,7 +33,7 @@
     <mat-spinner></mat-spinner><h4>Loading . . . Please Wait</h4>
   </div>
 
-  <div fxFlex="40">
+  <div fxFlex="200">
     <div>
       <h3>Comments</h3>
     </div>
@@ -51,9 +44,41 @@
           <p matLine>{{comment.comment}}</p>
           <p matLine>{{comment.rating}} Stars</p>
           <p matLine>-- {{comment.author}}</p>    
+          <p matLine>-- {{ comment.date | date:format}}</p>   
         </mat-list-item>
       </mat-list>
     </div>
-  </div>
 
+    <mat-list *ngIf="validated">
+      <mat-list-item>
+        <p matLine>{{feedbackForm.value.text}}</p> 
+        <p matLine>-- {{feedbackForm.value.rating}} Stars</p> 
+        <p matLine>-- {{feedbackForm.value.name}}</p> 
+      </mat-list-item>
+    </mat-list>
+  
+    <form novalidate [formGroup]="feedbackForm" #fform="ngForm" (ngSubmit)="onSubmit()">
+      <p>
+        <mat-form-field class="full-width">
+          <input matInput formControlName="name" placeholder="Name" type="text" required>
+          <mat-error *ngIf="formErrors.name">{{formErrors.name}}</mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-slider min="0" max="5" step="1" value="5" formControlName="rating"></mat-slider>
+      </p>
+      <p>
+        <mat-form-field class="full-width">
+          <input matInput formControlName="text" placeholder="Comment" type="text" required>
+          <mat-error *ngIf="formErrors.text">{{formErrors.text}}</mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+      <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="!feedbackForm.valid">Submit</button>
+    </form>
+  </div>
+    
 </div>
+
+  
+
