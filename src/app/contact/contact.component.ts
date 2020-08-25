@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Feedback, ContactType } from '../shared/feedback';
-import { flyInOut } from '../animations/app.animation';
+import { FeedbackService } from '../services/feedback.service';
+import { flyInOut , expand} from '../animations/app.animation';
 
 
 
@@ -14,7 +15,8 @@ import { flyInOut } from '../animations/app.animation';
     'style': 'display: block;'
     },
     animations: [
-      flyInOut()
+      flyInOut(),
+      expand()
     ]
 })
 export class ContactComponent implements OnInit {
@@ -24,7 +26,10 @@ export class ContactComponent implements OnInit {
 
   feedbackForm: FormGroup;
   feedback: Feedback;
+  returnSubmit: Feedback;
+  spinner: boolean;
   contactType = ContactType;
+  errMess: string;
 
   formErrors = {
     'firstname': '',
@@ -54,7 +59,8 @@ export class ContactComponent implements OnInit {
     },
   };
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+    private feedbackservice: FeedbackService,) {
     this.createForm();
   }
 
@@ -75,11 +81,26 @@ export class ContactComponent implements OnInit {
     this.feedbackForm.valueChanges
       .subscribe(data => this.onValueChanged(data));
 
-    this.onValueChanged(); // (re)set validation messages now
+    this.onValueChanged(); // (re)set validation messages no
+
   }
   onSubmit() {
+    this.returnSubmit=null;
+    this.spinner = true;
     this.feedback = this.feedbackForm.value;
     console.log(this.feedback);
+    this.feedbackservice.putFeedback(this.feedback)
+      .subscribe(feedback => {
+        this.feedback = feedback;
+        this.returnSubmit = feedback;
+        setTimeout (() => {
+          console.log("Hello from setTimeout");
+          this.spinner =null;
+          this.returnSubmit = null;
+        }, 4000);
+        
+        },
+      errmess => { this.feedback = null; this.errMess = <any>errmess; });
     this.feedbackForm.reset(
       {
         firstname: '',
